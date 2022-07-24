@@ -2,9 +2,13 @@
 
 {% block main %}
 <h1>Grocery store</h1>
+<script src="../static/js/update-quantity.js" defer></script>
 <section class="menu">
 
-  <h2>Page {{page}}</h2>
+  <h2>Page {{current_page}}</h2>
+  {% if session.total_quantity %}
+  <a href="/check-out">You have {{session.total_quantity}} items in your cart</a>
+  {% endif %}
   <div>
     {% for page in range(1,page_count+1) %}
     <a href="/?page={{page}}">{{page}}</a>
@@ -18,10 +22,12 @@
       <p>${{product.price}}</p>
       <p>{{product.package_size}}</p>
       <p>{{product.cup_price}}</p>
-      <button>-</button>
-      <p id="quantity-{{product.id}}">1</p>
-      <button>+</button>
-      <button>Add to cart</button>
+      <form action="/add-to-cart-action?page={{current_page}}&product-id={{product.id}}" method="POST">
+        <button id="minus-{{loop.index0}}" type="button">-</button>
+        <input id="quantity-{{loop.index0}}" name="quantity" value="0" readonly>
+        <button id="plus-{{loop.index0}}" type="button">+</button>
+        <button id="add-{{loop.index0}}" type="submit">Add to cart</button>
+      </form>
     </li>
     {% endfor %}
   </ul>
