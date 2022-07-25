@@ -2,5 +2,22 @@
 
 {% block main %}
 <h2>Your bag items</h2>
-
+<h3>Total: ${{total_cart_amount/100}}</h3>
+<section>
+  <ul>
+    {% for cart_product in cart_products %}
+    <li>
+      <img width="250" height="200" src="{{cart_product.image_url}}" alt="{{cart_product.name}}">
+      <p>Item name: {{cart_product.name}}</p>
+      <p>Unit price: ${{cart_product.price/100}}</p>
+      <p>Quantity: {{cart_product.quantity}}</p>
+      <p>Total product amount: ${{cart_product.total_amount/100}}</p>
+      <form action="/delete-item-action?product-id={{cart_product.id}}" method="POST">
+        <button type="submit">Delete</button>
+      </form>
+    </li>
+    {% endfor %}
+</section>
+<form action="/check-out" method="POST">
+</form>
 {% endblock %}

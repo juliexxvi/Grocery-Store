@@ -19,7 +19,7 @@
     <li>
       <img width="250" height="200" src="{{product.image_url}}" alt="{{product.name}}">
       <p>{{product.name}}</p>
-      <p>${{product.price}}</p>
+      <p>${{product.price/100}}</p>
       <p>{{product.package_size}}</p>
       <p>{{product.cup_price}}</p>
       <form action="/add-to-cart-action?page={{current_page}}&product-id={{product.id}}" method="POST">
