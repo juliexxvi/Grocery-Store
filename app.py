@@ -1,6 +1,4 @@
-from itertools import product
-from unittest import result
-from flask import Flask, make_response, request, redirect, render_template, session
+from flask import Flask, request, redirect, render_template, session
 import psycopg2
 # from hash import hash, check
 from functools import wraps
@@ -55,17 +53,31 @@ def check_out():
                 "name": row[1],
                 "image_url": row[2],
                 "price": row[3],
-                "brand": row[4],
-                "store": row[5],
-                "code": row[6],
-                "cup_price": row[7],
-                "package_size": row[8],
                 "quantity": cart_item_quantity,
                 "total_amount": cart_item_quantity*row[3]
             })
             total_cart_amount += cart_item_quantity*row[3]
+        session['total_cart_amount'] = total_cart_amount
+        session['cart_products'] = cart_products
         return render_template('check-out.html', cart_products=cart_products, total_cart_amount=total_cart_amount)
-    # if request.method == 'POST':
+    if request.method == 'POST':
+        customer_name = request.form.get('customer_name')
+        customer_address = request.form.get('customer_address')
+        total_amount = session.get('total_cart_amount')
+        cur.execute('INSERT INTO orders(customer_name, customer_address, total_amount) VALUES(%s, %s, %s) RETURNING id',
+                    (customer_name, customer_address, total_amount))
+        order_id = cur.fetchone()[0]
+        conn.commit()
+        cart_products = session.get('cart_products')
+        for cart_product in cart_products:
+            quantity = cart_product['quantity']
+            unit_price_in_cents = cart_product['price']
+            product_id = cart_product['id']
+            cur.execute('INSERT INTO order_details(order_id, product_id, quantity, unit_price_in_cents) VALUES(%s, %s, %s, %s)',
+                        (order_id, product_id, quantity, unit_price_in_cents))
+            conn.commit()
+        session.clear()
+        return redirect('/')
 
 
 @app.route('/delete-item-action', methods=['POST'])
@@ -103,10 +115,16 @@ def add_to_cart_action():
         session['total_quantity'] = int(
             session['total_quantity']) + quantity
         if quantity != 0:
-            arr.append({
-                'id': product_id,
-                'quantity': quantity
-            })
+            found = False
+            for i in range(0, len(arr)):
+                if product_id == arr[i]['id']:
+                    arr[i]['quantity'] += quantity
+                    found = True
+            if not found:
+                arr.append({
+                    'id': product_id,
+                    'quantity': quantity
+                })
         session['cart'] = arr
     # print(session.get('cart'))
     return redirect(f'/?page={current_page}')

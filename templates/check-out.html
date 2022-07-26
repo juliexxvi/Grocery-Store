@@ -19,5 +19,8 @@
     {% endfor %}
 </section>
 <form action="/check-out" method="POST">
+  <input name="customer_name" value="">
+  <input name="customer_address" value="">
+  <button type="submit">Confirm payment as a Guest</button>
 </form>
 {% endblock %}
