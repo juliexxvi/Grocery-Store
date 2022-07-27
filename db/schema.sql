@@ -41,5 +41,6 @@ CREATE TABLE users(
   role text NOT NULL
 );
 
+INSERT INTO users (name, email, password_hash, role) VALUES ('admin', 'admin@gmail.com', '$2b$12$H3bLAcyhibTK6O.3DKbrx.zI4ImQ9TRJwAhVFJnMf1ZlhTsOBDJgm','admin');
 
 

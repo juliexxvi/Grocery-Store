@@ -10,7 +10,15 @@
 </head>
 
 <body>
-
+  <div>
+    {% if session.user_id %}
+    <h2>Logged in as {{session.user_name}}</h2>
+    <a href="/logout">Log out</a>
+    {% else %}
+    <a href="/login">Log in</a>
+    <a href="/register">Sign up</a>
+    {% endif %}
+  </div>
   <main>
     {% block main %}
     {% endblock %}

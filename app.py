@@ -1,6 +1,7 @@
+from unittest import result
 from flask import Flask, request, redirect, render_template, session
+from hash import hash, check
 import psycopg2
-# from hash import hash, check
 from functools import wraps
 
 app = Flask(__name__)
@@ -40,6 +41,8 @@ def index():
 @app.route('/check-out', methods=['GET', 'POST'])
 def check_out():
     if request.method == 'GET':
+        if session.get('user_role') == 'admin':
+            return redirect('/')
         cart_items = session.get('cart')
         cart_products = []
         total_cart_amount = 0
@@ -77,7 +80,7 @@ def check_out():
                         (order_id, product_id, quantity, unit_price_in_cents))
             conn.commit()
         session.clear()
-        return redirect('/')
+        return render_template('success.html', order_id=order_id)
 
 
 @app.route('/delete-item-action', methods=['POST'])
@@ -128,6 +131,120 @@ def add_to_cart_action():
         session['cart'] = arr
     # print(session.get('cart'))
     return redirect(f'/?page={current_page}')
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'GET':
+        return render_template('login.html')
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        cur.execute('SELECT * FROM users WHERE email=%s', [email])
+        if cur.rowcount == 0:
+            return redirect('/login')
+        else:
+            results = cur.fetchall()
+            if check(password, results[0][3]):
+                session['user_name'] = results[0][2]
+                session['user_id'] = results[0][0]
+                session['user_role'] = results[0][4]
+                if results[0][4] == 'admin':
+                    return redirect('/orders')
+                return redirect('/')
+            else:
+                return redirect('/login')
+
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect('/')
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'GET':
+        return render_template('register.html')
+    if request.method == 'POST':
+        password = request.form.get("password")
+        name = request.form.get("name")
+        email = request.form.get("email")
+        ref_code = request.form.get('ref-code')
+        cur.execute("SELECT * FROM users WHERE email=%s", [email])
+        if cur.rowcount != 0 or ref_code != '123789456':
+            return redirect('/register')
+
+        cur.execute("INSERT INTO users (name, email, password_hash, role) VALUES(%s, %s, %s, 'admin') RETURNING id, role",
+                    (name, email, hash(password)))
+        result = cur.fetchone()
+        user_id = result[0]
+        user_role = result[1]
+        conn.commit()
+        session['user_name'] = name
+        session['user_role'] = user_role
+        # user's ID
+        session['user_id'] = user_id
+        return redirect('/')
+
+
+@app.route('/orders', methods=['GET'])
+def orders():
+    if session.get('user_role') != 'admin':
+        return redirect('/')
+    cur.execute("""SELECT * FROM orders""")
+    results = cur.fetchall()
+    orders = []
+    for row in results:
+        orders.append({
+            "id": row[0],
+            "customer_name": row[1],
+            "customer_address": row[2],
+            "total_amount": row[3]
+        })
+    return render_template('orders.html', orders=orders)
+
+
+@app.route('/order-details', methods=['GET'])
+def order_details():
+    if session.get('user_role') != 'admin':
+        return redirect('/')
+    order_id = request.args.get('id')
+    cur.execute("""
+        SELECT
+            products.id,
+            products.store,
+            products.name,
+            order_details.unit_price_in_cents,
+            order_details.quantity,
+            orders.customer_name,
+            orders.customer_address,
+	        orders.total_amount 
+        FROM
+            products
+        INNER JOIN order_details ON
+            order_details.product_id=products.id
+        INNER JOIN orders ON 
+            order_details.order_id=orders.id
+        WHERE
+        	order_details.order_id=%s
+        ORDER BY
+            products.store
+    """, [order_id])
+    results = cur.fetchall()
+    customer_name = results[0][5]
+    customer_address = results[0][6]
+    total_amount = results[0][7]
+    order_details = []
+    for row in results:
+        order_details.append({
+            "product_id": row[0],
+            "store": row[1],
+            "product_name": row[2],
+            "unit_price": row[3],
+            "quantity": row[4]
+        })
+    return render_template('order-details.html', order_details=order_details, order_id=order_id, customer_name=customer_name, customer_address=customer_address, total_amount=total_amount)
 
 
 if __name__ == '__main__':
