@@ -4,21 +4,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Food Truck</title>
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/style.css') }}">
+  <title>Grocery Store</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap.min.css') }}">
 </head>
 
 <body>
-  <div>
-    {% if session.user_id %}
-    <h2>Logged in as {{session.user_name}}</h2>
-    <a href="/logout">Log out</a>
-    {% else %}
-    <a href="/login">Log in</a>
-    <a href="/register">Sign up</a>
-    {% endif %}
-  </div>
+  <header class="d-flex flex-wrap align-items-center justify-content-center mt-4">
+    <a href="/" class="d-flex justify-content-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
+      <h1>Grocery Store</h1>
+    </a>
+  </header>
+  <nav class="py-2 bg-light border-bottom">
+    <div class="container d-flex flex-wrap">
+      <ul class="nav me-auto">
+        <li class="nav-item font-weight-bold"><a href="/" class="nav-link link-dark px-2">Home</a></li>
+        {% if session.user_role == 'admin' %}
+        <li class="nav-item"><a href="/orders" class="nav-link link-dark px-2 font-weight-bold">Orders</a></li>
+        {% endif %}
+      </ul>
+      <ul class="nav">
+        {% if session.total_quantity and session.user_role != 'admin' %}
+        <li class="nav-item">
+          <a class="btn btn-primary" href="/check-out">
+            Cart <span class="badge badge-light">{{session.total_quantity}}</span>
+          </a>
+        </li>
+        {% endif %}
+        {% if session.user_id %}
+        <li class="nav-item"><a href="#" class="nav-link link-dark px-2">Hi, {{session.user_name}}!</a></li>
+        <li class="nav-item"><a href="/logout" class="nav-link link-dark px-2">Log out</a></li>
+        {% else %}
+        <li class="nav-item"><a href="/login" class="nav-link link-dark px-2">Login</a></li>
+        <li class="nav-item"><a href="/register" class="nav-link link-dark px-2">Sign up</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </nav>
   <main>
     {% block main %}
     {% endblock %}

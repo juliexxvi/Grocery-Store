@@ -41,7 +41,8 @@ def index():
 @app.route('/check-out', methods=['GET', 'POST'])
 def check_out():
     if request.method == 'GET':
-        if session.get('user_role') == 'admin':
+        total_quantity = session.get('total_quantity')
+        if session.get('user_role') == 'admin' or total_quantity is None or total_quantity == 0:
             return redirect('/')
         cart_items = session.get('cart')
         cart_products = []
@@ -64,6 +65,9 @@ def check_out():
         session['cart_products'] = cart_products
         return render_template('check-out.html', cart_products=cart_products, total_cart_amount=total_cart_amount)
     if request.method == 'POST':
+        total_quantity = session.get('total_quantity')
+        if total_quantity is None or total_quantity == 0:
+            return redirect('/')
         customer_name = request.form.get('customer_name')
         customer_address = request.form.get('customer_address')
         total_amount = session.get('total_cart_amount')
@@ -183,8 +187,9 @@ def register():
         conn.commit()
         session['user_name'] = name
         session['user_role'] = user_role
-        # user's ID
         session['user_id'] = user_id
+        if user_role == 'admin':
+            return redirect('/orders')
         return redirect('/')
 
 

@@ -1,19 +1,43 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block main %}
-<form action="/register" method="post">
-  <div class="form-group">
-    <input autocomplete="off" autofocus class="form-control" name="email" placeholder="Email" type="email">
-  </div>
-  <div class="form-group">
-    <input autocomplete="off" autofocus class="form-control" name="name" placeholder="Username" type="text">
-  </div>
-  <div class="form-group">
-    <input class="form-control" name="password" placeholder="Password" type="password">
-  </div>
-  <div class="form-group">
-    <input class="form-control" name="ref-code" placeholder="Reference code" type="password">
-  </div>
-  <button type="submit">Sign up</button>
-</form>
-{% endblock %}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grocery Store</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap.min.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/signin.css') }}">
+</head>
+
+<body>
+  <main class="form-signin w-100 m-auto">
+    <form action="/register" method="POST">
+      <h1 class="h3 mb-3 fw-normal">New account</h1>
+
+      <div class="form-floating">
+        <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" name="email">
+        <label for="floatingInput">Email address</label>
+      </div>
+      <div class="form-floating">
+        <input type="text" class="form-control" id="floatingInput" placeholder="name" name="name">
+        <label for="floatingInput">Name</label>
+      </div>
+      <div class="form-floating">
+        <input type="text" class="form-control" id="floatingInput" placeholder="Reference code" name="ref-code">
+        <label for="floatingInput">Reference code</label>
+      </div>
+      <div class="form-floating">
+        <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password">
+        <label for="floatingPassword">Password</label>
+      </div>
+      <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+    </form>
+    <p>
+    <p><a href="/login">Already have an account? Log in!</a></p>
+    <p><a href="/">Back to shopping</a></p>
+    </p>
+
+  </main>
+</body>
+
+</html>

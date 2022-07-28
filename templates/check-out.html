@@ -1,26 +1,48 @@
 {% extends "base.html" %}
 
 {% block main %}
-<h2>Your bag items</h2>
-<h3>Total: ${{total_cart_amount/100}}</h3>
-<section>
-  <ul>
+<div class="album py-4">
+  <div class="container border-bottom">
     {% for cart_product in cart_products %}
-    <li>
-      <img width="250" height="200" src="{{cart_product.image_url}}" alt="{{cart_product.name}}">
-      <p>Item name: {{cart_product.name}}</p>
-      <p>Unit price: ${{cart_product.price/100}}</p>
-      <p>Quantity: {{cart_product.quantity}}</p>
-      <p>Total product amount: ${{cart_product.total_amount/100}}</p>
-      <form action="/delete-item-action?product-id={{cart_product.id}}" method="POST">
-        <button type="submit">Delete</button>
-      </form>
-    </li>
+    <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+      <div class="col-auto d-none d-lg-block">
+        <div class="py-4">
+          <img width="150" height="100" src="{{cart_product.image_url}}" alt="{{cart_product.name}}">
+        </div>
+      </div>
+      <div class="col p-4 d-flex flex-column position-static">
+        <strong class="d-inline-block mb-2 text-primary">{{cart_product.name}}</strong>
+        <div class="mb-1 text-muted">${{cart_product.price/100}}</div>
+        <p class="card-text mb-auto">Quantity: {{cart_product.quantity}}</p>
+
+      </div>
+      <div class="col col-auto d-flex flex-column justify-content-center px-5">
+        <h4 class="mb-0">${{cart_product.total_amount/100}}</h4>
+      </div>
+    </div>
     {% endfor %}
-</section>
-<form action="/check-out" method="POST">
-  <input name="customer_name" value="">
-  <input name="customer_address" value="">
-  <button type="submit">Confirm payment as a Guest</button>
-</form>
+    <div class="row" style="text-align: right;">
+      <h3>Total: ${{total_cart_amount/100}}</h3>
+    </div>
+  </div>
+  <div class="container">
+    <h4 class="my-3">Shipping address</h4>
+    <form action="/check-out" method="POST">
+      <div class="col-12 my-3">
+        <label for="name" class="form-label">Customer Name</label>
+        <input name="customer_name" type="text" class="form-control" id="name" placeholder="John Doe" required>
+      </div>
+
+      <div class="col-12 my-3">
+        <label for="address" class="form-label">Address</label>
+        <input name="customer_address" type="text" class="form-control" id="address" placeholder="1234 Main St"
+          required>
+      </div>
+
+      <div class="col-12 my-3">
+        <button class="btn btn-primary" type="submit">Confirm Order as Guest</button>
+      </div>
+    </form>
+  </div>
+</div>
 {% endblock %}
