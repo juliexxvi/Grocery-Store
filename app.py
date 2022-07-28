@@ -1,12 +1,15 @@
-from unittest import result
+import os
 from flask import Flask, request, redirect, render_template, session
 from hash import hash, check
 import psycopg2
 from functools import wraps
 
+DATABASE_URL = os.environ.get('DATABASE_URL', 'dbname=grocery_store')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'thawing-dusk-52692')
+
 app = Flask(__name__)
-app.secret_key = b'b0af2307-0335-442c-acb1-8ac4639ab9ec'
-conn = psycopg2.connect('dbname=grocery_store')
+app.secret_key = SECRET_KEY.encode()
+conn = psycopg2.connect(DATABASE_URL)
 cur = conn.cursor()
 
 
