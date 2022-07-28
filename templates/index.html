@@ -5,7 +5,11 @@
 <div class="py-3 text-center container">
   <span>Page: </span>
   {% for page in range(1,page_count+1) %}
-  <a href="/?page={{page}}">{{page}}</a>
+  {% if page == current_page | int %}
+  <a class="btn btn-primary" href="/?page={{page}}">{{page}}</a>
+  {% else %}
+  <a class="btn btn-secondary" href="/?page={{page}}">{{page}}</a>
+  {% endif %}
   {% endfor %}
 </div>
 <div class="album py-2">
@@ -65,7 +69,11 @@
 <div class="py-3 text-center container">
   <span>Page: </span>
   {% for page in range(1,page_count+1) %}
-  <a href="/?page={{page}}">{{page}}</a>
+  {% if page == current_page | int %}
+  <a class="btn btn-primary" href="/?page={{page}}">{{page}}</a>
+  {% else %}
+  <a class="btn btn-secondary" href="/?page={{page}}">{{page}}</a>
+  {% endif %}
   {% endfor %}
 </div>
 {% endblock %}
