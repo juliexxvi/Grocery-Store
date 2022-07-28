@@ -1,3 +1,3 @@
 # Grocery-Store
 
-[Grocery Store link at]([https://iexcloud.io/docs/api/](https://thawing-dusk-52692.herokuapp.com/))
+[Grocery Store link at](https://iexcloud.io/docs/api/](https://thawing-dusk-52692.herokuapp.com)
