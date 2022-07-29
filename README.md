@@ -95,7 +95,7 @@ pip3 install -r requirements.txt
 - Open a terminal at the project directory and run the command
 
 ```
-python3 money_changer.py
+python3 app.py
 ```
 
 - Open your browser and go to the URL provided, the web app is ready to use now
