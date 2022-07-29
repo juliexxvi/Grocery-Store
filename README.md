@@ -32,6 +32,7 @@ https://github.com/juliexxvi/Grocery-Store
 ### Sign up
 
 - Require that a user input email address, user's name, reference code and password. The program won't let the user to sign up if their email address already exists
+- In order to sign up as an admin, please use the following reference code `#123789456`
   <img src="./screenshots/register.png" width="1000">
 
 - Once the user finished the `sign up`, they will be able to `login`
