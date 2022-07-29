@@ -1,6 +1,6 @@
 # Grocery-Store
 
-A website that allows user to buy stuff and users who are admin role to manage and check buyer orders.
+A website that allows user to buy stuff and lets users those who are doing admin role manage and check buyer orders.
 
 ## A link (URL) to your deployed website
 
