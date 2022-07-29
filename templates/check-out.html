@@ -14,13 +14,16 @@
         <strong class="d-inline-block mb-2 text-primary">{{cart_product.name}}</strong>
         <div class="mb-1 text-muted">${{cart_product.price/100}}</div>
         <p class="card-text mb-auto">Quantity: {{cart_product.quantity}}</p>
-
+        <form action="/delete-item-action?product-id={{cart_product.id}}" method="POST">
+          <button class="btn btn-danger btn-sm my-2" id="minus-{{loop.index0}}" type="submit">Delete</button>
+        </form>
       </div>
       <div class="col col-auto d-flex flex-column justify-content-center px-5">
         <h4 class="mb-0">${{cart_product.total_amount/100}}</h4>
       </div>
     </div>
     {% endfor %}
+
     <div class="row" style="text-align: right;">
       <h3>Total: ${{total_cart_amount/100}}</h3>
     </div>
@@ -32,13 +35,11 @@
         <label for="name" class="form-label">Customer Name</label>
         <input name="customer_name" type="text" class="form-control" id="name" placeholder="John Doe" required>
       </div>
-
       <div class="col-12 my-3">
         <label for="address" class="form-label">Address</label>
         <input name="customer_address" type="text" class="form-control" id="address" placeholder="1234 Main St"
           required>
       </div>
-
       <div class="col-12 my-3">
         <button class="btn btn-primary" type="submit">Confirm Order as Guest</button>
       </div>

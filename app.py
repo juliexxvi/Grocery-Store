@@ -95,6 +95,7 @@ def delete_item_action():
     product_id = int(request.args.get('product-id'))
     cart_items = session.get('cart')
     total_quantity = session.get('total_quantity')
+
     for i in range(0, len(cart_items)):
         if product_id == cart_items[i]['id']:
             total_quantity -= cart_items[i]['quantity']
@@ -102,6 +103,7 @@ def delete_item_action():
             break
     session['cart'] = cart_items
     session['total_quantity'] = total_quantity
+
     return redirect('/check-out')
 
 
